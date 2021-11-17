@@ -1,6 +1,6 @@
-const request = require('@nicklason/request-retry');
+const request = require('request-retry-dayjs');
 const cheerio = require('cheerio');
-const steamLogin = require('steam-openid-login');
+const steamLogin = require('steam-openid-login-dayjs');
 
 class BackpackTFLogin {
     constructor () {

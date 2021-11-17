@@ -1,7 +1,7 @@
 {
-  "name": "bptf-login",
-  "version": "1.0.3",
-  "description": "Signs in to backpack.tf and gets API key and token",
+  "name": "bptf-login-2",
+  "version": "2.0.8",
+  "description": "Signs in to backpack.tf and gets API key and token - Originally from Nicklason",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon app.js",
@@ -10,22 +10,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Nicklason/node-bptf-login.git"
+    "url": "git+https://github.com/idinium96/node-bptf-login-2.git"
   },
-  "author": "Nicklas Marc Pedersen",
+  "author": "Nicklas Marc Pedersen/IdiNium",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Nicklason/node-bptf-login/issues"
+    "url": "https://github.com/idinium96/node-bptf-login-2/issues"
   },
-  "homepage": "https://github.com/Nicklason/node-bptf-login#readme",
+  "homepage": "https://github.com/idinium96/node-bptf-login-2#readme",
   "dependencies": {
-    "@nicklason/request-retry": "^1.1.2",
-    "cheerio": "^1.0.0-rc.3",
-    "steam-openid-login": "^1.0.0"
+    "cheerio": "^1.0.0-rc.10",
+    "request-retry-dayjs": "^1.1.0",
+    "steam-openid-login-dayjs": "^1.0.6"
   },
-  "devDependencies": {
-    "eslint": "^6.7.2",
-    "eslint-config-google": "^0.14.0",
-    "nodemon": "^2.0.2"
-  }
+  "devDependencies": {}
 }
