@@ -20,8 +20,7 @@
   "homepage": "https://github.com/TF2Autobot/node-bptf-login#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
-    "request-retry-dayjs": "^1.1.0",
-    "steam-openid-login-dayjs": "^1.0.6"
-  },
-  "devDependencies": {}
+    "request-retry-dayjs": "^1.1.1",
+    "steam-openid-login-dayjs": "^1.0.8"
+  }
 }
