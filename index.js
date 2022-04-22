@@ -63,7 +63,7 @@ class BackpackTFLogin {
 
                 callback(null, apiKey);
             }
-        );
+        ).end();
     }
 
     /**
@@ -120,7 +120,7 @@ class BackpackTFLogin {
 
                 callback(null, apiKey);
             }
-        );
+        ).end();
     }
 
     /**
@@ -170,7 +170,7 @@ class BackpackTFLogin {
 
                 callback(null);
             }
-        );
+        ).end();
     }
 
     /**
@@ -207,7 +207,7 @@ class BackpackTFLogin {
 
                 callback(null, settings);
             }
-        );
+        ).end();
     }
 
     /**
@@ -268,7 +268,7 @@ class BackpackTFLogin {
 
                 callback(null, settings);
             }
-        );
+        ).end();
     }
 
     /**
@@ -308,7 +308,7 @@ class BackpackTFLogin {
 
                 callback(null, accessToken);
             }
-        );
+        ).end();
     }
 
     /**
@@ -349,7 +349,7 @@ class BackpackTFLogin {
 
                 callback(null, accessToken);
             }
-        );
+        ).end();
     }
 
     _getUserID() {
