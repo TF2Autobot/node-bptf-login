@@ -25,7 +25,7 @@ class BackpackTFLogin {
      * @param {*} callback
      */
     login(callback) {
-        steamLogin('https://backpack.tf/login', this.jar, callback);
+        steamLogin('https://old.backpack.tf/login', this.jar, callback);
     }
 
     /**
@@ -36,7 +36,7 @@ class BackpackTFLogin {
         request(
             {
                 method: 'GET',
-                url: 'https://backpack.tf/developer/apikey/view',
+                url: 'https://old.backpack.tf/developer/apikey/view',
                 jar: this.jar,
                 followAllRedirects: true,
             },
@@ -83,7 +83,7 @@ class BackpackTFLogin {
         request(
             {
                 method: 'POST',
-                url: 'https://backpack.tf/developer/apikey/view',
+                url: 'https://old.backpack.tf/developer/apikey/view',
                 followAllRedirects: true,
                 jar: this.jar,
                 form: {
@@ -139,7 +139,7 @@ class BackpackTFLogin {
         request(
             {
                 method: 'POST',
-                url: 'https://backpack.tf/developer/apikey/revoke',
+                url: 'https://old.backpack.tf/developer/apikey/revoke',
                 followAllRedirects: true,
                 jar: this.jar,
                 form: {
@@ -181,7 +181,7 @@ class BackpackTFLogin {
         request(
             {
                 method: 'GET',
-                url: 'https://backpack.tf/settings',
+                url: 'https://old.backpack.tf/settings',
                 followAllRedirects: true,
                 jar: this.jar,
             },
@@ -229,7 +229,7 @@ class BackpackTFLogin {
         request(
             {
                 method: 'POST',
-                url: 'https://backpack.tf/settings',
+                url: 'https://old.backpack.tf/settings',
                 followAllRedirects: true,
                 jar: this.jar,
                 formData: form,
@@ -279,7 +279,7 @@ class BackpackTFLogin {
         request(
             {
                 method: 'GET',
-                url: 'https://backpack.tf/connections',
+                url: 'https://old.backpack.tf/connections',
                 followAllRedirects: true,
                 jar: this.jar,
             },
@@ -326,7 +326,7 @@ class BackpackTFLogin {
         request(
             {
                 method: 'POST',
-                url: 'https://backpack.tf/generate_token',
+                url: 'https://old.backpack.tf/generate_token',
                 followAllRedirects: true,
                 jar: this.jar,
                 form: {
@@ -353,7 +353,7 @@ class BackpackTFLogin {
     }
 
     _getUserID() {
-        const cookies = this.jar.getCookies('https://backpack.tf');
+        const cookies = this.jar.getCookies('https://old.backpack.tf');
 
         const userID = cookies.find((cookie) => cookie.key === 'user-id');
 
