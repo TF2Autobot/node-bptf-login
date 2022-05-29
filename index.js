@@ -1,6 +1,6 @@
 const request = require('request-retry-dayjs');
 const cheerio = require('cheerio');
-const steamLogin = require('steam-openid-login-dayjs');
+const steamLogin = require('@tf2autobot/steam-openid-login');
 
 // TODO: UPGRADE TO AXIOS
 
