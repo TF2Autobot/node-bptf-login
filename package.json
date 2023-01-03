@@ -1,6 +1,6 @@
 {
   "name": "@tf2autobot/bptf-login",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "Signs in to backpack.tf and gets API key and token - Originally from Nicklason",
   "main": "index.js",
   "scripts": {
