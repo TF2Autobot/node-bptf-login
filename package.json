@@ -21,6 +21,6 @@
   "dependencies": {
     "@tf2autobot/steam-openid-login": "^1.4.5",
     "cheerio": "^1.0.0-rc.12",
-    "request-retry-dayjs": "^1.1.7"
+    "request-retry-dayjs": "^1.1.8"
   }
 }
