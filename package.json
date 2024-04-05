@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/TF2Autobot/node-bptf-login#readme",
   "dependencies": {
-    "@tf2autobot/steam-openid-login": "^1.4.5",
+    "@tf2autobot/steam-openid-login": "^1.4.6",
     "cheerio": "^1.0.0-rc.12",
     "request-retry-dayjs": "^1.1.8"
   }
