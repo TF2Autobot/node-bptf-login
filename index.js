@@ -1,12 +1,13 @@
-const request = require('request-retry-dayjs');
+const { CookieJar } = require('tough-cookie');
+const fetchCookie = require('fetch-cookie');
 const cheerio = require('cheerio');
 const steamLogin = require('@tf2autobot/steam-openid-login');
 
-// TODO: UPGRADE TO AXIOS
-
 class BackpackTFLogin {
     constructor() {
-        this.jar = request.jar();
+        this.jar = new CookieJar();
+        // Wrap the native global fetch to seamlessly handle cookies across redirects
+        this.fetch = fetchCookie(fetch, this.jar);
     }
 
     /**
@@ -15,10 +16,7 @@ class BackpackTFLogin {
      */
     setCookies(cookies) {
         cookies.forEach((cookieStr) => {
-            this.jar.setCookie(
-                request.cookie(cookieStr),
-                'https://steamcommunity.com'
-            );
+            this.jar.setCookieSync(cookieStr, 'https://steamcommunity.com');
         });
     }
 
@@ -35,22 +33,18 @@ class BackpackTFLogin {
      * @param {Function} callback
      */
     getAPIKey(callback) {
-        request(
-            {
-                method: 'GET',
-                url: 'https://backpack.tf/developer/apikey/view',
-                jar: this.jar,
-                followAllRedirects: true,
-            },
-            function (err, response, body) {
-                if (err) {
-                    return callback(err);
-                }
+        (async () => {
+            try {
+                const response = await this.fetch('https://backpack.tf/developer/apikey/view', {
+                    method: 'GET',
+                    redirect: 'follow',
+                });
 
-                if (response.request.uri.host === 'steamcommunity.com') {
+                if (new URL(response.url).hostname === 'steamcommunity.com') {
                     return callback(new Error('Not logged in'));
                 }
 
+                const body = await response.text();
                 const $ = cheerio.load(body);
 
                 if ($('input[value="Generate my API key"]').length !== 0) {
@@ -64,8 +58,10 @@ class BackpackTFLogin {
                 }
 
                 callback(null, apiKey);
+            } catch (err) {
+                callback(err);
             }
-        ).end();
+        })();
     }
 
     /**
@@ -78,31 +74,30 @@ class BackpackTFLogin {
         const userID = this._getUserID();
 
         if (userID === null) {
-            callback(new Error('Not logged in'));
-            return;
+            return callback(new Error('Not logged in'));
         }
 
-        request(
-            {
-                method: 'POST',
-                url: 'https://backpack.tf/developer/apikey/view',
-                followAllRedirects: true,
-                jar: this.jar,
-                form: {
-                    url: url,
-                    comments: comment,
-                    'user-id': userID,
-                },
-            },
-            function (err, response, body) {
-                if (err) {
-                    return callback(err);
-                }
+        (async () => {
+            try {
+                const formData = new URLSearchParams();
+                formData.append('url', url);
+                formData.append('comments', comment);
+                formData.append('user-id', userID);
 
-                if (response.request.uri.host === 'steamcommunity.com') {
+                const response = await this.fetch('https://backpack.tf/developer/apikey/view', {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString(),
+                });
+
+                if (new URL(response.url).hostname === 'steamcommunity.com') {
                     return callback(new Error('Not logged in'));
                 }
 
+                const body = await response.text();
                 const $ = cheerio.load(body);
 
                 const alert = $('div.alert.alert-danger');
@@ -121,8 +116,10 @@ class BackpackTFLogin {
                 }
 
                 callback(null, apiKey);
+            } catch (err) {
+                callback(err);
             }
-        ).end();
+        })();
     }
 
     /**
@@ -134,31 +131,30 @@ class BackpackTFLogin {
         const userID = this._getUserID();
 
         if (userID === null) {
-            callback(new Error('Not logged in'));
-            return;
+            return callback(new Error('Not logged in'));
         }
 
-        request(
-            {
-                method: 'POST',
-                url: 'https://backpack.tf/developer/apikey/revoke',
-                followAllRedirects: true,
-                jar: this.jar,
-                form: {
-                    identifier: '',
-                    'user-id': userID,
-                    confirm_apikey: apiKey,
-                },
-            },
-            function (err, response, body) {
-                if (err) {
-                    return callback(err);
-                }
+        (async () => {
+            try {
+                const formData = new URLSearchParams();
+                formData.append('identifier', '');
+                formData.append('user-id', userID);
+                formData.append('confirm_apikey', apiKey);
 
-                if (response.request.uri.host === 'steamcommunity.com') {
+                const response = await this.fetch('https://backpack.tf/developer/apikey/revoke', {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString(),
+                });
+
+                if (new URL(response.url).hostname === 'steamcommunity.com') {
                     return callback(new Error('Not logged in'));
                 }
 
+                const body = await response.text();
                 const $ = cheerio.load(body);
 
                 const alert = $('div.alert.alert-danger');
@@ -171,8 +167,10 @@ class BackpackTFLogin {
                 }
 
                 callback(null);
+            } catch (err) {
+                callback(err);
             }
-        ).end();
+        })();
     }
 
     /**
@@ -180,22 +178,18 @@ class BackpackTFLogin {
      * @param {Function} callback
      */
     getSettings(callback) {
-        request(
-            {
-                method: 'GET',
-                url: 'https://backpack.tf/settings',
-                followAllRedirects: true,
-                jar: this.jar,
-            },
-            function (err, response, body) {
-                if (err) {
-                    return callback(err);
-                }
+        (async () => {
+            try {
+                const response = await this.fetch('https://backpack.tf/settings', {
+                    method: 'GET',
+                    redirect: 'follow',
+                });
 
-                if (response.request.uri.host === 'steamcommunity.com') {
+                if (new URL(response.url).hostname === 'steamcommunity.com') {
                     return callback(new Error('Not logged in'));
                 }
 
+                const body = await response.text();
                 const $ = cheerio.load(body);
 
                 const settingsSerialized = $('form#settings-form')
@@ -208,8 +202,10 @@ class BackpackTFLogin {
                 });
 
                 callback(null, settings);
+            } catch (err) {
+                callback(err);
             }
-        ).end();
+        })();
     }
 
     /**
@@ -221,30 +217,31 @@ class BackpackTFLogin {
         const userID = this._getUserID();
 
         if (userID === null) {
-            callback(new Error('Not logged in'));
-            return;
+            return callback(new Error('Not logged in'));
         }
 
-        const form = Object.assign({}, settings);
-        form['user-id'] = userID;
-
-        request(
-            {
-                method: 'POST',
-                url: 'https://backpack.tf/settings',
-                followAllRedirects: true,
-                jar: this.jar,
-                formData: form,
-            },
-            function (err, response, body) {
-                if (err) {
-                    return callback(err);
+        (async () => {
+            try {
+                const formData = new URLSearchParams();
+                for (const key in settings) {
+                    formData.append(key, settings[key]);
                 }
+                formData.append('user-id', userID);
 
-                if (response.request.uri.host === 'steamcommunity.com') {
+                const response = await this.fetch('https://backpack.tf/settings', {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString(),
+                });
+
+                if (new URL(response.url).hostname === 'steamcommunity.com') {
                     return callback(new Error('Not logged in'));
                 }
 
+                const body = await response.text();
                 const $ = cheerio.load(body);
 
                 const alert = $('div.alert.alert-warning');
@@ -269,8 +266,10 @@ class BackpackTFLogin {
                 });
 
                 callback(null, settings);
+            } catch (err) {
+                callback(err);
             }
-        ).end();
+        })();
     }
 
     /**
@@ -278,22 +277,18 @@ class BackpackTFLogin {
      * @param {Function} callback
      */
     getAccessToken(callback) {
-        request(
-            {
-                method: 'GET',
-                url: 'https://backpack.tf/connections',
-                followAllRedirects: true,
-                jar: this.jar,
-            },
-            function (err, response, body) {
-                if (err) {
-                    return callback(err);
-                }
+        (async () => {
+            try {
+                const response = await this.fetch('https://backpack.tf/connections', {
+                    method: 'GET',
+                    redirect: 'follow',
+                });
 
-                if (response.request.uri.host === 'steamcommunity.com') {
+                if (new URL(response.url).hostname === 'steamcommunity.com') {
                     return callback(new Error('Not logged in'));
                 }
 
+                const body = await response.text();
                 const $ = cheerio.load(body);
 
                 const alert = $('div.alert.alert-danger');
@@ -309,8 +304,10 @@ class BackpackTFLogin {
                 const accessToken = form.find('input[type="text"]').val();
 
                 callback(null, accessToken);
+            } catch (err) {
+                callback(err);
             }
-        ).end();
+        })();
     }
 
     /**
@@ -321,42 +318,42 @@ class BackpackTFLogin {
         const userID = this._getUserID();
 
         if (userID === null) {
-            callback(new Error('Not logged in'));
-            return;
+            return callback(new Error('Not logged in'));
         }
 
-        request(
-            {
-                method: 'POST',
-                url: 'https://backpack.tf/generate_token',
-                followAllRedirects: true,
-                jar: this.jar,
-                form: {
-                    'user-id': userID,
-                },
-            },
-            function (err, response, body) {
-                if (err) {
-                    return callback(err);
-                }
+        (async () => {
+            try {
+                const formData = new URLSearchParams();
+                formData.append('user-id', userID);
 
-                if (response.request.uri.host === 'steamcommunity.com') {
+                const response = await this.fetch('https://backpack.tf/generate_token', {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString(),
+                });
+
+                if (new URL(response.url).hostname === 'steamcommunity.com') {
                     return callback(new Error('Not logged in'));
                 }
 
+                const body = await response.text();
                 const $ = cheerio.load(body);
 
                 const form = $('form[action="/generate_token"]');
                 const accessToken = form.find('input[type="text"]').val();
 
                 callback(null, accessToken);
+            } catch (err) {
+                callback(err);
             }
-        ).end();
+        })();
     }
 
     _getUserID() {
-        const cookies = this.jar.getCookies('https://backpack.tf');
-
+        const cookies = this.jar.getCookiesSync('https://backpack.tf');
         const userID = cookies.find((cookie) => cookie.key === 'user-id');
 
         return userID === undefined ? null : userID.value;
