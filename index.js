@@ -1,5 +1,6 @@
 const { CookieJar } = require('tough-cookie');
-const fetchCookie = require('fetch-cookie').default;
+const fetchCookieModule = require('fetch-cookie');
+const fetchCookie = fetchCookieModule.default || fetchCookieModule;
 const cheerio = require('cheerio');
 const steamLogin = require('@tf2autobot/steam-openid-login');
 
@@ -39,6 +40,12 @@ class BackpackTFLogin {
                     method: 'GET',
                     redirect: 'follow',
                 });
+
+                if (!response.ok) {
+                    return callback(new Error(`HTTP Error on bptf-login_getAPIKey: ${response.status} ${response.statusText}`));
+                    // OR if the method is strictly Promise-based (which might upgrade later):
+                    // throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
 
                 if (new URL(response.url).hostname === 'steamcommunity.com') {
                     return callback(new Error('Not logged in'));
